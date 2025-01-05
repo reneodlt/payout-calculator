@@ -46,10 +46,17 @@
                 <input type="text" id="totalIncome" class="form-control" value="0.00" readonly>
             </div>
             <div class="mb-3">
+                <label for="feeType" class="form-label">House Fee Type</label>
+                <select id="feeType" class="form-select">
+                    <option value="percentage" selected>Percentage (%)</option>
+                    <option value="absolute">Absolute (£)</option>
+                </select>
+            </div>
+            <div class="mb-3" id="feePercentageContainer">
                 <label for="feePercentage" class="form-label">House Fee (%)</label>
                 <input type="number" id="feePercentage" class="form-control" value="10" min="0" max="100" step="1">
             </div>
-            <div class="mb-3">
+            <div class="mb-3 d-none" id="feeAbsoluteContainer">
                 <label for="feeAbsolute" class="form-label">House Fee (£)</label>
                 <input type="number" id="feeAbsolute" class="form-control" value="500" min="0" step="1">
             </div>
@@ -190,6 +197,9 @@
     }
 
     function calculatePayouts() {
+        const totalRevenue = calculateTotalRevenue();
+        const houseFee = calculateHouseFee(totalRevenue);
+
         const entryFee = parseFloat(document.getElementById('entryFee').value);
         const numEntries = parseInt(document.getElementById('numEntries').value);
         const rebuys = parseInt(document.getElementById('rebuys').value);
@@ -199,11 +209,9 @@
         const payoutModel = document.getElementById('payoutModel').value;
         const modelParam = parseFloat(document.getElementById('modelParam').value);
 
-        const totalRevenue = calculateTotalRevenue();
         const feePercentage = parseFloat(document.getElementById('feePercentage').value);
         const feeAbsolute = parseFloat(document.getElementById('feeAbsolute').value);
 
-        const houseFee = feeAbsolute || (feePercentage / 100) * totalRevenue;
         const totalPrizePool = totalRevenue - houseFee;
 
         if (payoutModel === 'convex' || payoutModel === 'concave') {
@@ -286,25 +294,77 @@
 
         const breakdownTableBody = document.getElementById('breakdownTable').querySelector('tbody');
         breakdownTableBody.innerHTML = ''; // Clear existing rows
+
+        const sumOfPayouts = payouts.reduce((a, b) => a + b, 0);
+        const difference = totalPrizePool - sumOfPayouts;
+        const differenceCategory = difference > 0 ? "Benefit to House" : "Benefit to Players";
+
         const breakdownData = [
-            {category: "Total Revenue", amount: totalRevenue},
-            {category: "House Fee", amount: houseFee},
-            {category: "Total Prize Pool", amount: totalPrizePool},
-            {category: "Sum of Payouts", amount: payouts.reduce((a, b) => a + b, 0)},
+            { category: "Total Revenue", amount: totalRevenue },
+            { category: "House Fee", amount: houseFee },
+            { category: "Total Prize Pool", amount: totalPrizePool },
+            { category: "Sum of Payouts", amount: sumOfPayouts },
+            { category: differenceCategory, amount: Math.abs(difference) },
         ];
-        breakdownData.forEach(item => {
+
+        breakdownData.forEach((item, index) => {
             const row = document.createElement('tr');
+
+            // Highlight row for difference
+            if (index === breakdownData.length - 1 && difference !== 0) {
+                row.style.color = difference > 0 ? 'red' : 'green'; // Red for house benefit, green for players benefit
+            }
+
             const categoryCell = document.createElement('td');
             categoryCell.textContent = item.category;
+
             const amountCell = document.createElement('td');
             amountCell.textContent = `£${item.amount.toFixed(2)}`;
+
             row.appendChild(categoryCell);
             row.appendChild(amountCell);
             breakdownTableBody.appendChild(row);
         });
+
     };
 
-        // Attach event listeners to all inputs and dropdowns
+    function updateFeeTypeToggle() {
+        const feeTypeSelect = document.getElementById('feeType');
+        const feePercentageContainer = document.getElementById('feePercentageContainer');
+        const feeAbsoluteContainer = document.getElementById('feeAbsoluteContainer');
+
+        feeTypeSelect.addEventListener('change', () => {
+            if (feeTypeSelect.value === 'percentage') {
+                feePercentageContainer.classList.remove('d-none');
+                feeAbsoluteContainer.classList.add('d-none');
+            } else {
+                feePercentageContainer.classList.add('d-none');
+                feeAbsoluteContainer.classList.remove('d-none');
+            }
+        });
+    }
+
+    function calculateHouseFee(totalRevenue) {
+        const feeType = document.getElementById('feeType').value;
+        if (feeType === 'percentage') {
+            const feePercentage = parseFloat(document.getElementById('feePercentage').value) || 0;
+            return (feePercentage / 100) * totalRevenue;
+        } else {
+            const feeAbsolute = parseFloat(document.getElementById('feeAbsolute').value) || 0;
+            return feeAbsolute;
+        }
+    }
+
+
+
+    // Call the toggle initialization after DOM loads
+    document.addEventListener('DOMContentLoaded', () => {
+        updateFeeTypeToggle();
+        calculatePayouts(); // Ensure initial calculation
+    });
+
+
+    // Attach event listeners to all inputs and dropdowns
         function attachEventListeners() {
             const inputs = document.querySelectorAll('input, select');
             inputs.forEach(input => {
