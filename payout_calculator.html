@@ -22,6 +22,13 @@
 <div class="container">
     <h1 class="text-center">Poker Tournament Payout Calculator</h1>
     <p><a href="https://github.com/reneodlt/payout-calculator">Source code / contact details available</a></p>
+    <div class="mt-4">
+        <button class="btn btn-primary" id="generateLink">Generate Shareable Link</button>
+        <div class="mt-2">
+            <a id="shareableLink" href="#" target="_blank" class="text-decoration-none">Your shareable link will appear here</a>
+        </div>
+    </div>
+
     <!-- Input Controls -->
     <div class="row">
         <div class="col-md-6">
@@ -327,6 +334,53 @@
         });
 
     };
+
+    function generateShareableLink() {
+        const params = new URLSearchParams();
+
+        // Dynamically collect all input and select values
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (input.id && input.value !== '') {
+                params.append(input.id, input.value); // Use the element's id as the key
+            }
+        });
+
+        // Generate the URL
+        const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+
+        // Update the shareable link anchor
+        const shareableLinkElement = document.getElementById('shareableLink');
+        shareableLinkElement.href = url; // Set the href to the generated URL
+        shareableLinkElement.textContent = url; // Display the URL as link text
+    }
+
+
+    function loadParametersFromURL() {
+        const params = new URLSearchParams(window.location.search);
+
+        // Dynamically populate all input and select fields
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (params.has(input.id)) {
+                input.value = params.get(input.id);
+
+                // Dispatch a change event to ensure UI updates (e.g., feeType toggle)
+                input.dispatchEvent(new Event('change'));
+            }
+        });
+
+        // Trigger recalculation with loaded values
+        calculatePayouts();
+    }
+
+    // Call this function when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', loadParametersFromURL);
+
+
+    // Attach event listener to the "Generate Shareable Link" button
+    document.getElementById('generateLink').addEventListener('click', generateShareableLink);
+
 
     function updateFeeTypeToggle() {
         const feeTypeSelect = document.getElementById('feeType');
