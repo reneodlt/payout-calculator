@@ -18,6 +18,19 @@
         }
     </style>
 
+    <style>
+        .chart-container {
+            max-width: 800px;
+            margin: auto;
+            height: 400px; /* Set the height explicitly */
+        }
+
+        canvas {
+            height: 100% !important; /* Ensure the canvas respects the container's height */
+        }
+    </style>
+
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KJJXM8R82Q"></script>
     <script>
@@ -43,68 +56,111 @@
     <!-- Input Controls -->
     <div class="row">
         <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="entryFee" class="form-label">Entry Fee (£)</label>
+                        <input type="number" id="entryFee" class="form-control" value="50" min="10" step="5">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="numEntries" class="form-label">Number of Entries</label>
+                        <input type="number" id="numEntries" class="form-control" value="50" min="10" step="1">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="rebuys" class="form-label">Rebuys</label>
+                        <input type="number" id="rebuys" class="form-control" value="20" min="0" step="1">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="addons" class="form-label">Add-ons</label>
+                        <input type="number" id="addons" class="form-control" value="10" min="0" step="1">
+                    </div>
+                </div>
+            </div>
+
             <div class="mb-3">
-                <label for="entryFee" class="form-label">Entry Fee (£)</label>
-                <input type="number" id="entryFee" class="form-control" value="50" min="10" step="5">
+                <label for="totalIncome" class="form-label">
+                    Total Income (£)
+                    <span class="text-muted" title="This field is calculated based on entry fees, rebuys, and add-ons.">?</span>
+                </label>
+                <input
+                        type="text"
+                        id="totalIncome"
+                        class="form-control bg-light border-0 text-muted"
+                        value="0.00"
+                        readonly
+                        title="This field is calculated and cannot be edited."
+                >
+                <small class="form-text text-muted">This field is automatically calculated.</small>
             </div>
-            <div class="mb-3">
-                <label for="numEntries" class="form-label">Number of Entries</label>
-                <input type="number" id="numEntries" class="form-control" value="50" min="10" step="10">
+
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="feeType" class="form-label">House Fee Type</label>
+                    <select id="feeType" class="form-select">
+                        <option value="percentage" selected>Percentage (%)</option>
+                        <option value="absolute">Absolute (£)</option>
+                    </select>
+                </div>
+                <div class="col-md-4" id="feePercentageContainer">
+                    <label for="feePercentage" class="form-label">House Fee (%)</label>
+                    <input type="number" id="feePercentage" class="form-control" value="10" min="0" max="100" step="1">
+                </div>
+                <div class="col-md-4 d-none" id="feeAbsoluteContainer">
+                    <label for="feeAbsolute" class="form-label">House Fee (£)</label>
+                    <input type="number" id="feeAbsolute" class="form-control" value="500" min="0" step="1">
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="rebuys" class="form-label">Rebuys</label>
-                <input type="number" id="rebuys" class="form-control" value="20" min="0" step="10">
-            </div>
-            <div class="mb-3">
-                <label for="addons" class="form-label">Add-ons</label>
-                <input type="number" id="addons" class="form-control" value="10" min="0" step="10">
-            </div>
-            <div class="mb-3">
-                <label for="totalIncome" class="form-label">Total Income (£)</label>
-                <input type="text" id="totalIncome" class="form-control" value="0.00" readonly>
-            </div>
-            <div class="mb-3">
-                <label for="feeType" class="form-label">House Fee Type</label>
-                <select id="feeType" class="form-select">
-                    <option value="percentage" selected>Percentage (%)</option>
-                    <option value="absolute">Absolute (£)</option>
-                </select>
-            </div>
-            <div class="mb-3" id="feePercentageContainer">
-                <label for="feePercentage" class="form-label">House Fee (%)</label>
-                <input type="number" id="feePercentage" class="form-control" value="10" min="0" max="100" step="1">
-            </div>
-            <div class="mb-3 d-none" id="feeAbsoluteContainer">
-                <label for="feeAbsolute" class="form-label">House Fee (£)</label>
-                <input type="number" id="feeAbsolute" class="form-control" value="500" min="0" step="1">
-            </div>
+
         </div>
         <div class="col-md-6">
-            <div class="mb-3">
-                <label for="numPlayersPaid" class="form-label">Players Paid</label>
-                <input type="number" id="numPlayersPaid" class="form-control" value="10" min="1" max="50">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="numPlayersPaid" class="form-label">Players Paid</label>
+                        <input type="number" id="numPlayersPaid" class="form-control" value="10" min="1" max="50">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="rounding" class="form-label">Rounding (£)</label>
+                        <select id="rounding" class="form-select">
+                            <option value="0">None</option>
+                            <option value="1">£1</option>
+                            <option value="5" selected>£5</option>
+                            <option value="10">£10</option>
+                            <option value="20">£20</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="rounding" class="form-label">Rounding (£)</label>
-                <select id="rounding" class="form-select">
-                    <option value="0">None</option>
-                    <option value="1">£1</option>
-                    <option value="5" selected>£5</option>
-                    <option value="10">£10</option>
-                    <option value="20">£20</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="payoutModel" class="form-label">Payout Model</label>
-                <select id="payoutModel" class="form-select">
-                    <option value="convex" selected>Convex</option>
-                    <option value="concave">Concave</option>
-                    <option value="exponential">Exponential Decay</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="modelParam" class="form-label">Model Parameter</label>
-                <input type="number" id="modelParam" class="form-control" value="1" step="0.1" min="-2" max="2">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="payoutModel" class="form-label">Payout Model</label>
+                        <select id="payoutModel" class="form-select">
+                            <option value="convex" selected>Convex</option>
+                            <option value="concave">Concave</option>
+                            <option value="exponential">Exponential Decay</option>
+                            <option value="gukpt">As per gukpt.com</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="modelParam" class="form-label">Model Parameter</label>
+                        <input type="number" id="modelParam" class="form-control" value="1" step="0.1" min="-2" max="2">
+                    </div>
+
+                </div>
                 <small id="modelParamHelp" class="form-text text-muted">
                     Adjust the model parameter to control the payout distribution curve:
                     <ul>
@@ -113,47 +169,60 @@
                         <li>Exponential Decay: Reasonable values might be between 0.2 and 0.4. The higher, the bigger difference between each position</li>
                     </ul>
                 </small>
+
             </div>
+
         </div>
     </div>
 
-    <!-- Results Section -->
-    <div class="text-center">
-        <button class="btn btn-primary" onclick="calculatePayouts()">Calculate Payouts</button>
-    </div>
+<!--    &lt;!&ndash; Results Section &ndash;&gt;-->
+<!--    <div class="text-center">-->
+<!--        <button class="btn btn-primary" onclick="calculatePayouts()">Calculate Payouts</button>-->
+<!--    </div>-->
 
     <!-- Chart -->
     <div class="chart-container mt-4">
-        <canvas id="payoutChart"></canvas>
+        <canvas id="payoutChart" style="max-height: 400px;"></canvas>
     </div>
 
-    <div class="mt-4">
-        <h3 class="text-center">Payouts Table</h3>
-        <table class="table table-striped" id="payoutTable">
-            <thead>
-            <tr>
-                <th>Position</th>
-                <th>Payout (£)</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+
+    <!-- Payouts Table -->
+    <div class="row mt-4">
+        <!-- Payouts Table -->
+        <div class="col-md-6">
+            <h3 class="text-center">Payouts Table</h3>
+            <table class="table table-striped" id="payoutTable">
+                <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Payout (£)</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div class="mt-2 text-center">
+                <strong>Publishable Link:</strong>
+                <a id="publishLink" href="#" target="_blank" class="text-decoration-none">Your publishable link will appear here</a>
+            </div>
+        </div>
+
+        <!-- Prize Pool Breakdown Table -->
+        <div class="col-md-6">
+            <h3 class="text-center">Prize Pool Breakdown</h3>
+            <table class="table table-striped" id="breakdownTable">
+                <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Amount (£)</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="mt-4">
-        <h3 class="text-center">Prize Pool Breakdown</h3>
-        <table class="table table-striped" id="breakdownTable">
-            <thead>
-            <tr>
-                <th>Category</th>
-                <th>Amount (£)</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
 
 </div>
 
@@ -186,6 +255,18 @@
         calculateTotalIncome();
     }
 
+    function getOrdinalSuffix(num) {
+        if (num % 100 >= 11 && num % 100 <= 13) {
+            return `${num}th`; // Special case for 11th, 12th, 13th
+        }
+        switch (num % 10) {
+            case 1: return `${num}st`;
+            case 2: return `${num}nd`;
+            case 3: return `${num}rd`;
+            default: return `${num}th`;
+        }
+    }
+
     function updateHouseFeeFields() {
         const totalRevenue = calculateTotalRevenue();
         const feePercentageInput = document.getElementById('feePercentage');
@@ -209,12 +290,174 @@
     function calculateTotalRevenue() {
         const entryFee = parseFloat(document.getElementById('entryFee').value);
         const numEntries = parseInt(document.getElementById('numEntries').value);
-        const rebuys = parseInt(document.getElementById('rebuys').value);
-        const addons = parseInt(document.getElementById('addons').value);
+        const rebuys = parseInt(document.getElementById('rebuys').value) || 0; // Default to 0 if missing
+        const addons = parseInt(document.getElementById('addons').value) || 0; // Default to 0 if missing
         return (entryFee * numEntries) + (entryFee * rebuys) + (entryFee * addons);
     }
 
+    function getPayoutRow(x) {
+        const payoutData = [
+            { min: 1, max: 6, payouts: [1.0] },
+            { min: 7, max: 12, payouts: [0.70, 0.30] },
+            { min: 13, max: 19, payouts: [0.50, 0.30, 0.20] },
+            { min: 20, max: 29, payouts: [0.40, 0.30, 0.20, 0.10] },
+            { min: 30, max: 39, payouts: [0.37, 0.27, 0.18, 0.10, 0.08] },
+            { min: 40, max: 49, payouts: [0.34, 0.25, 0.17, 0.10, 0.08, 0.06] },
+            { min: 50, max: 59, payouts: [0.33, 0.24, 0.16, 0.095, 0.075, 0.06] },
+        ];
+
+        // Raise an exception if the input is not a number
+        if (typeof x !== "number" || isNaN(x)) {
+            throw new Error("Input must be a valid number.");
+        }
+
+        // If x is less than the minimum range, raise an exception
+        if (x < 7) {
+            throw new Error("Input is too low for lookup (must be 7 or higher).");
+        }
+
+        // Find the row where x falls within the range
+        for (const row of payoutData) {
+            if (x >= row.min && x <= row.max) {
+                return row.payouts;
+            }
+        }
+
+        // If x is greater than the maximum range, raise an exception
+        throw new Error("Input is too high for lookup (must be 59 or lower).");
+    }
+
+
     function calculatePayouts() {
+        const totalRevenue = calculateTotalRevenue();
+        const houseFee = calculateHouseFee(totalRevenue);
+        const prizePool = totalRevenue - houseFee;
+
+        const numPlayersPaid = parseInt(document.getElementById('numPlayersPaid').value);
+        const payoutModel = document.getElementById('payoutModel').value;
+        const modelParam = parseFloat(document.getElementById('modelParam').value);
+        const rounding = parseInt(document.getElementById('rounding').value);
+        const numEntries = parseInt(document.getElementById('numEntries').value);
+        const totalPrizePool = totalRevenue - houseFee;
+
+        // Generate weights and payouts
+        const weights = (() => {
+            if (payoutModel === 'gukpt') {
+                // Define the GUKPT payout table
+                const gukptTable = [
+                    { min: 1, max: 6, payouts: [1] },
+                    { min: 7, max: 12, payouts: [0.70, 0.30] },
+                    { min: 13, max: 19, payouts: [0.50, 0.30, 0.20] },
+                    { min: 20, max: 29, payouts: [0.40, 0.30, 0.20, 0.10] },
+                    { min: 30, max: 39, payouts: [0.37, 0.27, 0.18, 0.10, 0.08] },
+                    { min: 40, max: 49, payouts: [0.34, 0.25, 0.17, 0.10, 0.08, 0.06] },
+                    { min: 50, max: 59, payouts: [0.33, 0.24, 0.16, 0.095, 0.075, 0.06] },
+                ];
+
+                // Find the appropriate payout row based on the number of players
+                const row = gukptTable.find(r => numEntries >= r.min && numEntries <= r.max);
+
+                if (!row) {
+                    throw new Error(`GUKPT model not defined for ${numPlayersPaid} players.`);
+                }
+
+                // Return the weights directly from the lookup table
+                return row.payouts;
+            } else {
+                // For other models, calculate weights dynamically
+                return Array.from({ length: numPlayersPaid }, (_, i) => {
+                    const position = i + 1;
+                    if (payoutModel === 'convex') {
+                        return Math.pow(position / numPlayersPaid, modelParam);
+                    } else if (payoutModel === 'concave') {
+                        return 1 - Math.pow(1 - position / numPlayersPaid, Math.abs(modelParam));
+                    } else if (payoutModel === 'exponential') {
+                        return Math.exp(-modelParam * position);
+                    } else {
+                        throw new Error(`Unknown payout model: ${payoutModel}`);
+                    }
+                });
+            }
+        })();
+
+
+        const normalizedWeights = weights.map(w => w / weights.reduce((a, b) => a + b, 0));
+        let payouts = normalizedWeights.map(w => w * prizePool);
+
+        // Apply rounding
+        if (rounding > 0) {
+            payouts = payouts.map(p => Math.round(p / rounding) * rounding);
+        }
+
+        if (payoutModel === 'convex' || payoutModel === 'concave') {
+            payouts = payouts.reverse();
+        }
+
+
+        // Update Chart
+
+
+        const labels = payouts.map((_, i) => getOrdinalSuffix(i + 1));
+
+        initializeChart(labels, payouts);
+
+        // Update Table
+        const tableBody = document.getElementById('payoutTable').querySelector('tbody');
+        tableBody.innerHTML = ''; // Clear table
+        payouts.forEach((payout, index) => {
+            const row = document.createElement('tr');
+            const positionCell = document.createElement('td');
+            positionCell.textContent = getOrdinalSuffix(index + 1);
+
+            const payoutCell = document.createElement('td');
+            payoutCell.textContent = `£${payout.toFixed(2)}`;
+            row.appendChild(positionCell);
+            row.appendChild(payoutCell);
+            tableBody.appendChild(row);
+        });
+
+        // Update Publishable Link
+        updatePublishableLink(payouts);
+
+        const breakdownTableBody = document.getElementById('breakdownTable').querySelector('tbody');
+        breakdownTableBody.innerHTML = ''; // Clear existing rows
+
+        const sumOfPayouts = payouts.reduce((a, b) => a + b, 0);
+        const difference = totalPrizePool - sumOfPayouts;
+        const differenceCategory = difference > 0 ? "Benefit to House" : "Benefit to Players";
+
+        const breakdownData = [
+            { category: "Total Revenue", amount: totalRevenue || 0 },
+            { category: "House Fee", amount: houseFee || 0 },
+            { category: "Total Prize Pool", amount: totalPrizePool || 0 },
+            { category: "Sum of Payouts", amount: sumOfPayouts || 0 },
+            { category: differenceCategory, amount: Math.abs(difference) || 0 },
+        ];
+
+        breakdownData.forEach((item, index) => {
+            const row = document.createElement('tr');
+
+            // Highlight row for difference
+            if (index === breakdownData.length - 1 && difference !== 0) {
+                row.style.color = difference > 0 ? 'red' : 'green'; // Red for house benefit, green for players benefit
+            }
+
+            const categoryCell = document.createElement('td');
+            categoryCell.textContent = item.category;
+
+            const amountCell = document.createElement('td');
+            amountCell.textContent = `£${item.amount.toFixed(2)}`;
+
+            row.appendChild(categoryCell);
+            row.appendChild(amountCell);
+            breakdownTableBody.appendChild(row);
+        });
+
+
+    }
+
+
+    function calculatePayoutsxxx() {
         const totalRevenue = calculateTotalRevenue();
         const houseFee = calculateHouseFee(totalRevenue);
 
@@ -266,35 +509,9 @@
                 .filter(p => p > 0); // Remove zero payouts
         }
 
-        // Generate Chart
-        const ctx = document.getElementById('payoutChart').getContext('2d');
-        if (window.payoutChart && typeof window.payoutChart.destroy === 'function') {
-            window.payoutChart.destroy();
-        }
+        const labels = payouts.map((_, i) => `${i + 1}th`);
+        initializeChart(labels, payouts);
 
-        window.payoutChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: payouts.map((_, i) => `${i + 1}th`),
-                datasets: [{
-                    label: 'Payouts (£)',
-                    data: payouts,
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        title: {display: true, text: 'Position'}
-                    },
-                    y: {
-                        title: {display: true, text: 'Prize (£)'}
-                    }
-                }
-            }
-        });
 
         // Populate Table
         const tableBody = document.getElementById('payoutTable').querySelector('tbody');
@@ -345,6 +562,24 @@
         });
 
     }
+
+    function updatePublishableLink(payouts) {
+        const publishParams = new URLSearchParams();
+
+        // Add each payout to the query parameters
+        payouts.forEach((payout, index) => {
+            publishParams.append(`payout_${index + 1}`, payout.toFixed(2));
+        });
+
+        // Generate the publishable URL
+        const publishUrl = `${window.location.origin}/publish?${publishParams.toString()}`;
+
+        // Update the publishable link element
+        const publishLinkElement = document.getElementById('publishLink');
+        publishLinkElement.href = publishUrl; // Set the href to the generated URL
+        publishLinkElement.textContent = publishUrl; // Display the URL as link text
+    }
+
 
     function generateShareableLink() {
         const params = new URLSearchParams();
@@ -437,6 +672,60 @@
         });
     }
 
+    let payoutChart; // Global variable for the chart instance
+
+    function initializeChart(labels, data) {
+        const ctx = document.getElementById('payoutChart').getContext('2d');
+
+        // Destroy the existing chart if it exists
+        if (payoutChart) {
+            payoutChart.destroy();
+        }
+
+        // Create a new chart
+        payoutChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Payouts (£)',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Position' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Prize (£)' },
+                        beginAtZero: true,
+                    }
+                }
+            }
+        });
+    }
+
+    // Add this function to handle enabling/disabling the Players Paid input
+    function togglePlayersPaidInput() {
+        const playersPaidInput = document.getElementById('numPlayersPaid');
+        const payoutModel = document.getElementById('payoutModel').value;
+
+        if (payoutModel === 'gukpt') {
+            playersPaidInput.disabled = true; // Disable the input
+            playersPaidInput.value = ''; // Clear the value as it's determined by GUKPT
+        } else {
+            playersPaidInput.disabled = false; // Enable the input for other models
+        }
+    }
+
+    document.getElementById('payoutModel').addEventListener('change', togglePlayersPaidInput);
+    document.addEventListener('DOMContentLoaded', togglePlayersPaidInput);
     document.addEventListener('DOMContentLoaded', updateHouseFeeFields);
     document.addEventListener('DOMContentLoaded', updateTotalIncomeField);
     // Initialize everything
