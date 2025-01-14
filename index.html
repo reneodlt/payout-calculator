@@ -229,6 +229,16 @@
 <!-- JavaScript -->
 <script>
 
+    const gukptTable = [
+        { min: 1, max: 6, payouts: [1] },
+        { min: 7, max: 12, payouts: [0.70, 0.30] },
+        { min: 13, max: 19, payouts: [0.50, 0.30, 0.20] },
+        { min: 20, max: 29, payouts: [0.40, 0.30, 0.20, 0.10] },
+        { min: 30, max: 39, payouts: [0.37, 0.27, 0.18, 0.10, 0.08] },
+        { min: 40, max: 49, payouts: [0.34, 0.25, 0.17, 0.10, 0.08, 0.06] },
+        { min: 50, max: 59, payouts: [0.33, 0.24, 0.16, 0.095, 0.075, 0.06] },
+    ];
+
     function updateTotalIncomeField() {
         const entryFeeInput = document.getElementById('entryFee');
         const numEntriesInput = document.getElementById('numEntries');
@@ -344,15 +354,7 @@
         const weights = (() => {
             if (payoutModel === 'gukpt') {
                 // Define the GUKPT payout table
-                const gukptTable = [
-                    { min: 1, max: 6, payouts: [1] },
-                    { min: 7, max: 12, payouts: [0.70, 0.30] },
-                    { min: 13, max: 19, payouts: [0.50, 0.30, 0.20] },
-                    { min: 20, max: 29, payouts: [0.40, 0.30, 0.20, 0.10] },
-                    { min: 30, max: 39, payouts: [0.37, 0.27, 0.18, 0.10, 0.08] },
-                    { min: 40, max: 49, payouts: [0.34, 0.25, 0.17, 0.10, 0.08, 0.06] },
-                    { min: 50, max: 59, payouts: [0.33, 0.24, 0.16, 0.095, 0.075, 0.06] },
-                ];
+
 
                 // Find the appropriate payout row based on the number of players
                 const row = gukptTable.find(r => numEntries >= r.min && numEntries <= r.max);
@@ -424,7 +426,7 @@
 
         const sumOfPayouts = payouts.reduce((a, b) => a + b, 0);
         const difference = totalPrizePool - sumOfPayouts;
-        const differenceCategory = difference > 0 ? "Benefit to House" : "Benefit to Players";
+        const differenceCategory = difference > 0 ? "Excess" : "Shortfall";
 
         const breakdownData = [
             { category: "Total Revenue", amount: totalRevenue || 0 },
@@ -437,20 +439,25 @@
         breakdownData.forEach((item, index) => {
             const row = document.createElement('tr');
 
-            // Highlight row for difference
-            if (index === breakdownData.length - 1 && difference !== 0) {
-                row.style.color = difference > 0 ? 'red' : 'green'; // Red for house benefit, green for players benefit
-            }
-
             const categoryCell = document.createElement('td');
             categoryCell.textContent = item.category;
 
             const amountCell = document.createElement('td');
+
+            if (index === breakdownData.length - 1) {if (difference !== 0) {
+                const span = document.createElement('span');
+                span.textContent = item.category;
+                span.style.color = difference > 0 ? 'green' : 'red'; // Red for "Excess", green for "Shortfall"
+                categoryCell.innerHTML = ''; // Clear any existing text
+                categoryCell.appendChild(span); // Add the colored span
+            }
+            }
+
             amountCell.textContent = `£${item.amount.toFixed(2)}`;
 
             row.appendChild(categoryCell);
             row.appendChild(amountCell);
-            breakdownTableBody.appendChild(row);
+            document.getElementById('breakdownTable').querySelector('tbody').appendChild(row);
         });
 
 
@@ -572,7 +579,7 @@
         });
 
         // Generate the publishable URL
-        const publishUrl = `${window.location.origin}/publish?${publishParams.toString()}`;
+        const publishUrl = `${window.location.origin}/payout-calculator/publish?${publishParams.toString()}`;
 
         // Update the publishable link element
         const publishLinkElement = document.getElementById('publishLink');
@@ -719,11 +726,45 @@
         if (payoutModel === 'gukpt') {
             playersPaidInput.disabled = true; // Disable the input
             playersPaidInput.value = ''; // Clear the value as it's determined by GUKPT
+            const numPlayers = parseInt(document.getElementById('numEntries').value, 10) || 0;
+
+            // Find the appropriate range in the GUKPT table
+            const row = gukptTable.find(r => numPlayers >= r.min && numPlayers <= r.max);
+
+            if (row) {
+                playersPaidInput.value = row.payouts.length; // Set players paid based on the lookup table
+            } else {
+                playersPaidInput.value = ''; // Clear the field if no match found
+            }
+
+            playersPaidInput.disabled = true; // Disable the input
         } else {
             playersPaidInput.disabled = false; // Enable the input for other models
         }
     }
 
+    function updatePlayersPaid() {
+        const playersPaidInput = document.getElementById('numPlayersPaid');
+        const payoutModel = document.getElementById('payoutModel').value;
+        if (payoutModel === 'gukpt') {
+            const numEntries = parseInt(document.getElementById('numEntries').value, 10) || 0;
+            const row = gukptTable.find(r => numEntries >= r.min && numEntries <= r.max);
+            if (row) {
+                playersPaidInput.value = row.payouts.length; // Set players paid based on the lookup table
+            } else {
+                playersPaidInput.value = ''; // Clear the field if no match found
+            }
+            playersPaidInput.disabled = true; // Disable the input
+        }
+    }
+
+
+    document.getElementById('numEntries').addEventListener('input', () => {
+        const payoutModel = document.getElementById('payoutModel').value;
+        if (payoutModel === 'gukpt') {
+            updatePlayersPaid();
+        }
+    });
     document.getElementById('payoutModel').addEventListener('change', togglePlayersPaidInput);
     document.addEventListener('DOMContentLoaded', togglePlayersPaidInput);
     document.addEventListener('DOMContentLoaded', updateHouseFeeFields);
