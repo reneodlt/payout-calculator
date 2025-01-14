@@ -53,73 +53,110 @@
         </div>
     </div>
 
+
+
     <!-- Input Controls -->
-    <div class="row">
+    <div class="row" id="income_row">
+        <div class="col-md-6">
+            <!-- Tabs for Total Income -->
+            <ul class="nav nav-tabs" id="incomeTab" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" id="breakdown-tab" data-bs-toggle="tab" data-bs-target="#breakdown"
+                            type="button" role="tab" aria-controls="breakdown" aria-selected="true">
+                        Calculate from Breakdown
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="direct-tab" data-bs-toggle="tab" data-bs-target="#direct" type="button"
+                            role="tab" aria-controls="direct" aria-selected="false">
+                        Enter Total Directly
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content" id="incomeTabContent">
+                <!-- Breakdown Tab -->
+                <div class="tab-pane fade show active" id="breakdown" role="tabpanel" aria-labelledby="breakdown-tab">
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="entryFee" class="form-label">Entry Fee (£)</label>
+                                <input type="number" id="entryFee" class="form-control" value="50" min="10" step="5">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="numEntries" class="form-label">Number of Entries</label>
+                                <input type="number" id="numEntries" class="form-control" value="50" min="10" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="rebuys" class="form-label">Rebuys</label>
+                                <input type="number" id="rebuys" class="form-control" value="20" min="0" step="1">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addons" class="form-label">Add-ons</label>
+                                <input type="number" id="addons" class="form-control" value="10" min="0" step="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="totalIncomeCalculated" class="form-label">
+                            Total Income (£)
+                            <span class="text-muted"
+                                  title="This field is calculated based on entry fees, rebuys, and add-ons.">?</span>
+                        </label>
+                        <input
+                                type="text"
+                                id="totalIncomeCalculated"
+                                class="form-control bg-light border-0 text-muted"
+                                value="0.00"
+                                readonly
+                                title="This field is calculated and cannot be edited."
+                        >
+                        <small class="form-text text-muted">This field is automatically calculated.</small>
+                    </div>
+                </div>
+                <!-- Direct Input Tab -->
+                <div class="tab-pane fade" id="direct" role="tabpanel" aria-labelledby="direct-tab">
+                    <div class="mt-3">
+                        <label for="totalIncomeDirect" class="form-label">Total Income (£)</label>
+                        <input type="number" id="totalIncomeDirect" class="form-control" value="0.00" step="0.01"
+                               min="0">
+                        <small class="form-text text-muted">Enter the total income directly.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="fees_row">
         <div class="col-md-6">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="entryFee" class="form-label">Entry Fee (£)</label>
-                        <input type="number" id="entryFee" class="form-control" value="50" min="10" step="5">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="numEntries" class="form-label">Number of Entries</label>
-                        <input type="number" id="numEntries" class="form-control" value="50" min="10" step="1">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="rebuys" class="form-label">Rebuys</label>
-                        <input type="number" id="rebuys" class="form-control" value="20" min="0" step="1">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="addons" class="form-label">Add-ons</label>
-                        <input type="number" id="addons" class="form-control" value="10" min="0" step="1">
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="totalIncome" class="form-label">
-                    Total Income (£)
-                    <span class="text-muted" title="This field is calculated based on entry fees, rebuys, and add-ons.">?</span>
-                </label>
-                <input
-                        type="text"
-                        id="totalIncome"
-                        class="form-control bg-light border-0 text-muted"
-                        value="0.00"
-                        readonly
-                        title="This field is calculated and cannot be edited."
-                >
-                <small class="form-text text-muted">This field is automatically calculated.</small>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
                     <label for="feeType" class="form-label">House Fee Type</label>
                     <select id="feeType" class="form-select">
                         <option value="percentage" selected>Percentage (%)</option>
                         <option value="absolute">Absolute (£)</option>
                     </select>
                 </div>
-                <div class="col-md-4" id="feePercentageContainer">
+                <div class="col-md-6" id="feePercentageContainer">
                     <label for="feePercentage" class="form-label">House Fee (%)</label>
-                    <input type="number" id="feePercentage" class="form-control" value="10" min="0" max="100" step="1">
+                    <input type="number" id="feePercentage" class="form-control" value="10" min="0" max="100"
+                           step="1">
                 </div>
-                <div class="col-md-4 d-none" id="feeAbsoluteContainer">
+                <div class="col-md-6 d-none" id="feeAbsoluteContainer">
                     <label for="feeAbsolute" class="form-label">House Fee (£)</label>
                     <input type="number" id="feeAbsolute" class="form-control" value="500" min="0" step="1">
                 </div>
             </div>
-
         </div>
+
+    </div>
+    <div class="row" id="payout_row">
         <div class="col-md-6">
             <div class="row">
                 <div class="col-md-6">
@@ -164,64 +201,71 @@
                 <small id="modelParamHelp" class="form-text text-muted">
                     Adjust the model parameter to control the payout distribution curve:
                     <ul>
-                        <li>Convex: Positive values emphasize higher positions. A value of 1 is a straight line, less than 1 means all payouts are more equal, more than means bigger gaps </li>
+                        <li>Convex: Positive values emphasize higher positions. A value of 1 is a straight line, less
+                            than 1
+                            means all payouts are more equal, more than means bigger gaps
+                        </li>
                         <li>Concave: Negative values emphasize lower positions.</li>
-                        <li>Exponential Decay: Reasonable values might be between 0.2 and 0.4. The higher, the bigger difference between each position</li>
+                        <li>Exponential Decay: Reasonable values might be between 0.2 and 0.4. The higher, the bigger
+                            difference between each position
+                        </li>
                     </ul>
                 </small>
 
             </div>
-
         </div>
     </div>
+</div>
 
-<!--    &lt;!&ndash; Results Section &ndash;&gt;-->
-<!--    <div class="text-center">-->
-<!--        <button class="btn btn-primary" onclick="calculatePayouts()">Calculate Payouts</button>-->
-<!--    </div>-->
+<!-- Results Section -->
+<div class="text-center">
+    <button class="btn btn-primary" onclick="calculatePayouts()">Calculate Payouts</button>
+</div>
 
-    <!-- Chart -->
-    <div class="chart-container mt-4">
-        <canvas id="payoutChart" style="max-height: 400px;"></canvas>
-    </div>
+<!-- Chart -->
+<div class="chart-container mt-4">
+    <canvas id="payoutChart" style="max-height: 400px;"></canvas>
+</div>
 
 
+<!-- Payouts Table -->
+<div class="row mt-4">
     <!-- Payouts Table -->
-    <div class="row mt-4">
-        <!-- Payouts Table -->
-        <div class="col-md-6">
-            <h3 class="text-center">Payouts Table</h3>
-            <table class="table table-striped" id="payoutTable">
-                <thead>
-                <tr>
-                    <th>Position</th>
-                    <th>Payout (£)</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <div class="mt-2 text-center">
-                <strong>Publishable Link:</strong>
-                <a id="publishLink" href="#" target="_blank" class="text-decoration-none">Your publishable link will appear here</a>
-            </div>
-        </div>
-
-        <!-- Prize Pool Breakdown Table -->
-        <div class="col-md-6">
-            <h3 class="text-center">Prize Pool Breakdown</h3>
-            <table class="table table-striped" id="breakdownTable">
-                <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Amount (£)</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+    <div class="col-md-6">
+        <h3 class="text-center">Payouts Table</h3>
+        <table class="table table-striped" id="payoutTable">
+            <thead>
+            <tr>
+                <th>Position</th>
+                <th>Payout (£)</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="mt-2 text-center">
+            <strong>Publishable Link:</strong>
+            <a id="publishLink" href="#" target="_blank" class="text-decoration-none">Your publishable link will
+                appear
+                here</a>
         </div>
     </div>
+
+    <!-- Prize Pool Breakdown Table -->
+    <div class="col-md-6">
+        <h3 class="text-center">Prize Pool Breakdown</h3>
+        <table class="table table-striped" id="breakdownTable">
+            <thead>
+            <tr>
+                <th>Category</th>
+                <th>Amount (£)</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
 
 
 </div>
@@ -244,7 +288,7 @@
         const numEntriesInput = document.getElementById('numEntries');
         const rebuysInput = document.getElementById('rebuys');
         const addonsInput = document.getElementById('addons');
-        const totalIncomeField = document.getElementById('totalIncome');
+        const totalIncomeField = document.getElementById('totalIncomeCalculated');
 
         function calculateTotalIncome() {
             const entryFee = parseFloat(entryFeeInput.value) || 0;
@@ -270,10 +314,14 @@
             return `${num}th`; // Special case for 11th, 12th, 13th
         }
         switch (num % 10) {
-            case 1: return `${num}st`;
-            case 2: return `${num}nd`;
-            case 3: return `${num}rd`;
-            default: return `${num}th`;
+            case 1:
+                return `${num}st`;
+            case 2:
+                return `${num}nd`;
+            case 3:
+                return `${num}rd`;
+            default:
+                return `${num}th`;
         }
     }
 
@@ -307,13 +355,13 @@
 
     function getPayoutRow(x) {
         const payoutData = [
-            { min: 1, max: 6, payouts: [1.0] },
-            { min: 7, max: 12, payouts: [0.70, 0.30] },
-            { min: 13, max: 19, payouts: [0.50, 0.30, 0.20] },
-            { min: 20, max: 29, payouts: [0.40, 0.30, 0.20, 0.10] },
-            { min: 30, max: 39, payouts: [0.37, 0.27, 0.18, 0.10, 0.08] },
-            { min: 40, max: 49, payouts: [0.34, 0.25, 0.17, 0.10, 0.08, 0.06] },
-            { min: 50, max: 59, payouts: [0.33, 0.24, 0.16, 0.095, 0.075, 0.06] },
+            {min: 1, max: 6, payouts: [1.0]},
+            {min: 7, max: 12, payouts: [0.70, 0.30]},
+            {min: 13, max: 19, payouts: [0.50, 0.30, 0.20]},
+            {min: 20, max: 29, payouts: [0.40, 0.30, 0.20, 0.10]},
+            {min: 30, max: 39, payouts: [0.37, 0.27, 0.18, 0.10, 0.08]},
+            {min: 40, max: 49, payouts: [0.34, 0.25, 0.17, 0.10, 0.08, 0.06]},
+            {min: 50, max: 59, payouts: [0.33, 0.24, 0.16, 0.095, 0.075, 0.06]},
         ];
 
         // Raise an exception if the input is not a number
@@ -355,7 +403,6 @@
             if (payoutModel === 'gukpt') {
                 // Define the GUKPT payout table
 
-
                 // Find the appropriate payout row based on the number of players
                 const row = gukptTable.find(r => numEntries >= r.min && numEntries <= r.max);
 
@@ -367,7 +414,7 @@
                 return row.payouts;
             } else {
                 // For other models, calculate weights dynamically
-                return Array.from({ length: numPlayersPaid }, (_, i) => {
+                return Array.from({length: numPlayersPaid}, (_, i) => {
                     const position = i + 1;
                     if (payoutModel === 'convex') {
                         return Math.pow(position / numPlayersPaid, modelParam);
@@ -429,11 +476,11 @@
         const differenceCategory = difference > 0 ? "Excess" : "Shortfall";
 
         const breakdownData = [
-            { category: "Total Revenue", amount: totalRevenue || 0 },
-            { category: "House Fee", amount: houseFee || 0 },
-            { category: "Total Prize Pool", amount: totalPrizePool || 0 },
-            { category: "Sum of Payouts", amount: sumOfPayouts || 0 },
-            { category: differenceCategory, amount: Math.abs(difference) || 0 },
+            {category: "Total Revenue", amount: totalRevenue || 0},
+            {category: "House Fee", amount: houseFee || 0},
+            {category: "Total Prize Pool", amount: totalPrizePool || 0},
+            {category: "Sum of Payouts", amount: sumOfPayouts || 0},
+            {category: differenceCategory, amount: Math.abs(difference) || 0},
         ];
 
         breakdownData.forEach((item, index) => {
@@ -542,11 +589,11 @@
         const differenceCategory = difference > 0 ? "Benefit to House" : "Benefit to Players";
 
         const breakdownData = [
-            { category: "Total Revenue", amount: totalRevenue },
-            { category: "House Fee", amount: houseFee },
-            { category: "Total Prize Pool", amount: totalPrizePool },
-            { category: "Sum of Payouts", amount: sumOfPayouts },
-            { category: differenceCategory, amount: Math.abs(difference) },
+            {category: "Total Revenue", amount: totalRevenue},
+            {category: "House Fee", amount: houseFee},
+            {category: "Total Prize Pool", amount: totalPrizePool},
+            {category: "Sum of Payouts", amount: sumOfPayouts},
+            {category: differenceCategory, amount: Math.abs(difference)},
         ];
 
         breakdownData.forEach((item, index) => {
@@ -663,12 +710,12 @@
     }
 
 
-
     // Call the toggle initialization after DOM loads
     document.addEventListener('DOMContentLoaded', () => {
         updateFeeTypeToggle();
         calculatePayouts(); // Ensure initial calculation
     });
+    let payoutChart; // Global variable for the chart instance
 
 
     // Attach event listeners to all inputs and dropdowns
@@ -679,7 +726,6 @@
         });
     }
 
-    let payoutChart; // Global variable for the chart instance
 
     function initializeChart(labels, data) {
         const ctx = document.getElementById('payoutChart').getContext('2d');
@@ -707,10 +753,10 @@
                 maintainAspectRatio: false,
                 scales: {
                     x: {
-                        title: { display: true, text: 'Position' }
+                        title: {display: true, text: 'Position'}
                     },
                     y: {
-                        title: { display: true, text: 'Prize (£)' },
+                        title: {display: true, text: 'Prize (£)'},
                         beginAtZero: true,
                     }
                 }
@@ -743,28 +789,48 @@
         }
     }
 
-    function updatePlayersPaid() {
-        const playersPaidInput = document.getElementById('numPlayersPaid');
-        const payoutModel = document.getElementById('payoutModel').value;
-        if (payoutModel === 'gukpt') {
-            const numEntries = parseInt(document.getElementById('numEntries').value, 10) || 0;
-            const row = gukptTable.find(r => numEntries >= r.min && numEntries <= r.max);
-            if (row) {
-                playersPaidInput.value = row.payouts.length; // Set players paid based on the lookup table
-            } else {
-                playersPaidInput.value = ''; // Clear the field if no match found
-            }
-            playersPaidInput.disabled = true; // Disable the input
+    // Function to calculate the total income from breakdown
+    function calculateTotalIncome() {
+        const entryFee = parseFloat(document.getElementById('entryFee').value) || 0;
+        const numEntries = parseInt(document.getElementById('numEntries').value) || 0;
+        const rebuys = parseInt(document.getElementById('rebuys').value) || 0;
+        const addons = parseInt(document.getElementById('addons').value) || 0;
+
+        const totalIncome = (entryFee * numEntries) + (entryFee * rebuys) + (entryFee * addons);
+        document.getElementById('totalIncomeCalculated').value = totalIncome.toFixed(2);
+    }
+
+    // Sync the total income field across both tabs
+    function syncTotalIncome() {
+        const activeTab = document.querySelector('.nav-link.active').id;
+        if (activeTab === 'breakdown-tab') {
+            calculateTotalIncome();
+            const calculatedIncome = document.getElementById('totalIncomeCalculated').value;
+            document.getElementById('totalIncomeDirect').value = calculatedIncome;
+        } else {
+            const directIncome = parseFloat(document.getElementById('totalIncomeDirect').value) || 0;
+            document.getElementById('totalIncomeCalculated').value = directIncome.toFixed(2);
         }
     }
 
+    // Event listeners for input changes
+    document.getElementById('entryFee').addEventListener('input', syncTotalIncome);
+    document.getElementById('numEntries').addEventListener('input', syncTotalIncome);
+    document.getElementById('rebuys').addEventListener('input', syncTotalIncome);
+    document.getElementById('addons').addEventListener('input', syncTotalIncome);
+    document.getElementById('totalIncomeDirect').addEventListener('input', syncTotalIncome);
 
-    document.getElementById('numEntries').addEventListener('input', () => {
-        const payoutModel = document.getElementById('payoutModel').value;
-        if (payoutModel === 'gukpt') {
-            updatePlayersPaid();
-        }
+    // Switch between tabs
+    document.querySelectorAll('.nav-link').forEach(tab => {
+        tab.addEventListener('click', () => {
+            syncTotalIncome();
+        });
     });
+
+    // Initial calculation on page load
+    document.addEventListener('DOMContentLoaded', calculateTotalIncome);
+
+
     document.getElementById('payoutModel').addEventListener('change', togglePlayersPaidInput);
     document.addEventListener('DOMContentLoaded', togglePlayersPaidInput);
     document.addEventListener('DOMContentLoaded', updateHouseFeeFields);
@@ -772,7 +838,6 @@
     // Initialize everything
     attachEventListeners();
     calculatePayouts();
-
 
 
 </script>
